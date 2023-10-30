@@ -102,6 +102,5 @@
         </p>
     </div>
 </footer>
-</div>
 </body>
 </html>
