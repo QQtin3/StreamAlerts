@@ -11,30 +11,25 @@ html {
 body {
     max-width: 400px;
     margin: 10px;
-
 }
 
 header {
     display: flex;
     align-items: center;
     font-family: Roboto, sans-serif;
+    font-size: 1.2em;
     /*background-color: #505050;
     margin: -10px -10px 10px -10px;
     border-radius: 4%;*/
 }
 
 header img {
-    margin: 0 15px;
+    margin: 0 10px;
 }
 
 .content {
     background-color: #dedede;
     margin-bottom: 1em;
-}
-
-.buttons-add-remove-settings {
-
-
 }
 
 .editing {
@@ -50,7 +45,7 @@ header img {
 .editing div button {
     width: 100%;
     margin: 0;
-    font-family: Whitney sans-serif;
+    font-family: "Roboto Black", sans-serif;
     font-size: 1.2em;
     border: none;
 }
@@ -98,16 +93,17 @@ header img {
     width: 100%;
     display: flex;
     align-items: center;
-    font-family: Whitney sans-serif;
-    font-size: 2em;
     border: none;
     background-color: grey;
     color: white;
     border-radius: 5%;
+    font-family: "Roboto Light", sans-serif;
+    font-size: 1.5em;
 }
 
 .settings button p {
     margin: 0;
+
 }
 
 .settings img {
@@ -148,7 +144,7 @@ header img {
 .streamer .name {
     flex: 4;
     color: black;
-    font-family: Whitney, sans-serif;
+    font-family: "Roboto", sans-serif;
     text-align: left;
     margin: 0;
 }
@@ -178,6 +174,7 @@ header img {
     text-decoration: none;
     text-align: center;
     color: #e8e8e8;
+    font-family: "Roboto Light", sans-serif;
 }
 
 .footer-text {
@@ -185,8 +182,8 @@ header img {
 }
 
 .footer-text p {
-    color: grey;
-    font-family: Whitney, sans-serif;
+    color: #676767;
+    font-family: "Roboto Light", sans-serif;
     font-style: italic;
     text-align: justify;
 }
