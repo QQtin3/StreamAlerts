@@ -1,4 +1,4 @@
-const nickname = "SiirZax";
+/*const nickname = "SiirZax";
 const twitchUrl = `https://www.twitch.tv/${nickname}`;
 const APIurl = `https://gql.twitch.tv/gql`;
 
@@ -24,7 +24,7 @@ const headers = {
 };
 
 async function fetchTwitchAPI(url, header, body) {
-    let data = await fetch (
+    let data = await fetch(
         url, {
             method: "POST",
             headers: header,
@@ -32,4 +32,8 @@ async function fetchTwitchAPI(url, header, body) {
         })
     return data.json();
 }
-fetchTwitchAPI().then(result => console.log(result));
+
+fetchTwitchAPI().then(result => console.log(result));*/
+
+
+
