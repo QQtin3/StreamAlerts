@@ -1,6 +1,6 @@
-const {fetchTwitchAPI, API_URL, HEADERS, BODY} = require("../../background.js");
+import {API_URL, fetchTwitchAPI, getBody, HEADERS} from "./twitchAPI.js";
 
-async function addChannel(name) {
+export async function addChannel(name) {
     let twitchChannelURL = `https://www.twitch.tv/${name}`;
     let doesUserExists = await doesChannelExists(twitchChannelURL);
     if (!doesUserExists) {
@@ -14,14 +14,10 @@ async function addChannel(name) {
     }
 }
 
-async function doesChannelExists(twitchChannelURL) {
-    let data = await fetchTwitchAPI(API_URL, HEADERS, BODY);
+export async function doesChannelExists(name) {
+    let data = await fetchTwitchAPI(API_URL, HEADERS, getBody(name));
     return !!data[0]?.data?.user;
 }
 
-async function isPartner(twitchChannelURL) {
+export async function isPartner(twitchChannelURL) {
 }
-
-module.exports = {
-    addChannel: addChannel,
-};

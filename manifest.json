@@ -16,5 +16,15 @@
       "64": "img/icon/icon64.png",
       "128": "img/icon/icon128.png"
     }
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": [
+        "src/core/channelManager.js",
+        "src/core/popup.js",
+        "src/core/twitchAPI.js"
+      ]
+    }
+  ]
 }

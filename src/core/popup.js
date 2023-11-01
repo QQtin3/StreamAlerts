@@ -1,4 +1,5 @@
-/*const channelManager = require ("channelManager.js");*/
+import { addChannel } from "./channelManager.js";
+
 
 const addButtonElement = document.getElementById("add-button");
 const removeButtonElement = document.getElementById("remove-button");
@@ -9,10 +10,22 @@ const nameInputContent = document.getElementById("name-input").value;
 
 let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac (mec bro hermano)", "Omg wtf"]
 
-function addStreamer(name) {
+async function addStreamer(name) {
 
-    streamerData.push(name);
-    createStreamerDiv(name);
+    let resultChannel = await addChannel(name);
+    switch (resultChannel) {
+        case -1:
+            alert("Error 404 : Channel not found");
+            break;
+        case 1:
+            streamerData.push(name);
+            createStreamerDiv(name);
+            break;
+        case 2:
+            streamerData.push(name);
+            createStreamerDiv(name);
+            break;
+    }
 }
 
 function removeStreamer() {
