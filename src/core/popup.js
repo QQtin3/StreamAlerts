@@ -1,4 +1,4 @@
-const channelManager = require ("channelManager.js");
+/*const channelManager = require ("channelManager.js");*/
 
 const addButtonElement = document.getElementById("add-button");
 const removeButtonElement = document.getElementById("remove-button");
