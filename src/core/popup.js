@@ -1,4 +1,4 @@
-import { addChannel } from "./channelManager.js";
+import {addChannel} from "./channelManager.js";
 
 
 const addButtonElement = document.getElementById("add-button");
@@ -9,16 +9,21 @@ const contentContainer = document.getElementById("content");
 let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac (mec bro hermano)", "Omg wtf"]
 
 async function addStreamer(name) {
-
-    let resultChannel = await addChannel(name);
+    let resultChannel = await addChannel(name, streamerData);
     switch (resultChannel) {
-        case -1:
-            alert("Error 404 : Channel not found");
+        case -2:
+            alert(`Value error : ${name} is already in the list!`);
             break;
+
+        case -1:
+            alert("Error 404 : Channel not found!");
+            break;
+
         case 1:
             streamerData.push(name);
             createStreamerDiv(name);
             break;
+
         case 2:
             streamerData.push(name);
             createStreamerDiv(name);
