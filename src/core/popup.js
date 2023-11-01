@@ -21,18 +21,24 @@ async function addStreamer(name) {
 
         case 1:
             streamerData.push(name);
-            createStreamerDiv(name);
+            await createStreamerDiv(name);
             break;
 
         case 2:
             streamerData.push(name);
-            createStreamerDiv(name);
+            await createStreamerDiv(name);
             break;
     }
 }
 
-function removeStreamer() {
-    alert("test");
+function removeStreamer(name) {
+    let index = streamerData.indexOf(name);
+    if (index !== -1) {
+        streamerData.splice(index, 1);
+        document.getElementById(`streamer${index}`).remove();
+    } else {
+        alert("Error 404 : Channel not found!");
+    }
 }
 
 function settingsButton() {
@@ -53,7 +59,8 @@ async function getStatusPath(name) {
 
 async function createStreamerDiv(name, i) {
     const streamerDiv = document.createElement("div");
-    streamerDiv.className = "streamer";
+    streamerDiv.className = `streamer`;
+    streamerDiv.id = `streamer${i}`;
 
     const channelLink = document.createElement("a");
     channelLink.className = "channelLink";
@@ -92,8 +99,6 @@ async function createStreamerDiv(name, i) {
     channelLink.appendChild(namePictureDiv);
     channelLink.appendChild(statusDiv);
     streamerDiv.appendChild(channelLink);
-
-
     contentContainer.appendChild(streamerDiv);
 }
 
@@ -112,18 +117,30 @@ async function dynamicStatusChange(streamers) {
 addButtonElement.addEventListener("click", () => {
     document.getElementById("popup-add").style.display = "block";
 });
-removeButtonElement.addEventListener("click", removeStreamer);
+removeButtonElement.addEventListener("click", () => {
+    document.getElementById("popup-remove").style.display = "block";
+});
 settingsButtonElement.addEventListener("click", settingsButton);
 
 /* Add new streamer with the input */
-document.getElementById("submit-btn-name-input").addEventListener("click", () => {
-    let nameInputContent = document.getElementById("name-input").value;
-    addStreamer(nameInputContent);
+document.getElementById("submit-btn-name-input-add").addEventListener("click", async () => {
+    let nameInputContent = document.getElementById("name-input-add").value;
+    await addStreamer(nameInputContent);
     quitPopup("popup-add");
 });
 
 document.getElementById("popup-quit-add").addEventListener("click", () => {
     quitPopup("popup-add");
+});
+
+document.getElementById("submit-btn-name-input-remove").addEventListener("click", () => {
+    let nameInputContent = document.getElementById("name-input-remove").value;
+    removeStreamer(nameInputContent);
+    quitPopup("popup-remove");
+});
+
+document.getElementById("popup-quit-remove").addEventListener("click", () => {
+    quitPopup("popup-remove");
 });
 
 
