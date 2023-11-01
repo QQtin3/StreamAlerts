@@ -1,4 +1,4 @@
-import {addChannel} from "./channelManager.js";
+import {addChannel, isOnLive} from "./channelManager.js";
 
 
 const addButtonElement = document.getElementById("add-button");
@@ -46,9 +46,19 @@ function quitPopup(div) {
     }
 }
 
-function createStreamerDiv(name) {
+async function getStatusPath(name) {
+    let isLive = await isOnLive(name);
+    return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png"
+}
+
+async function createStreamerDiv(name, i) {
     const streamerDiv = document.createElement("div");
     streamerDiv.className = "streamer";
+
+    const channelLink = document.createElement("a");
+    channelLink.className = "channelLink";
+    channelLink.href = `https://twitch.tv/${name}`;
+    channelLink.target = '_blank';
 
     const namePictureDiv = document.createElement("div");
     namePictureDiv.className = "name-picture";
@@ -74,20 +84,28 @@ function createStreamerDiv(name) {
     const statusDiv = document.createElement("div");
     statusDiv.className = "status";
     const statusImg = document.createElement("img");
-    statusImg.src = "../../img/offline-stream.png";
+    statusImg.src = await getStatusPath(name);
     statusImg.alt = "Streamer status";
-    statusImg.id = "streamer";
+    statusImg.id = `streamer${i}-status`;
     statusDiv.appendChild(statusImg);
 
-    streamerDiv.appendChild(namePictureDiv);
-    streamerDiv.appendChild(statusDiv);
+    channelLink.appendChild(namePictureDiv);
+    channelLink.appendChild(statusDiv);
+    streamerDiv.appendChild(channelLink);
+
 
     contentContainer.appendChild(streamerDiv);
 }
 
-function setupStreamerDiv() {
+async function setupStreamerDiv() {
     for (let i = 0; i < streamerData.length; i++) {
-        createStreamerDiv(streamerData[i]);
+        await createStreamerDiv(streamerData[i], i);
+    }
+}
+
+async function dynamicStatusChange(streamers) {
+    for (let i = 0; i < streamers.length; i++) {
+        document.getElementById(`streamer${i}-status`).src = await getStatusPath(streamers[i]);
     }
 }
 
@@ -109,6 +127,12 @@ document.getElementById("popup-quit-add").addEventListener("click", () => {
 });
 
 
-document.addEventListener("DOMContentLoaded", function () {
-    setupStreamerDiv();
+document.addEventListener("DOMContentLoaded", async function () {
+    await setupStreamerDiv();
+});
+
+/* AUTO UPDATE Status each minute*/
+chrome.alarms.create({periodInMinutes: 1});
+chrome.alarms.onAlarm.addListener(async () => {
+    await dynamicStatusChange()
 });

@@ -4,7 +4,10 @@
   "author": "Quentin L.",
   "description": "Retrouve toutes les informations concernant tes streamers favoris !",
   "version": "0",
-  "permissions": [],
+  "permissions": [
+    "alarms",
+    "notifications"
+  ],
   "background": {
     "service_worker": "background.js"
   },
