@@ -1,3 +1,5 @@
+const channelManager = require ("channelManager.js");
+
 const addButtonElement = document.getElementById("add-button");
 const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
@@ -8,6 +10,7 @@ const nameInputContent = document.getElementById("name-input").value;
 let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac (mec bro hermano)", "Omg wtf"]
 
 function addStreamer(name) {
+
     streamerData.push(name);
     createStreamerDiv(name);
 }
@@ -20,20 +23,12 @@ function settingsButton() {
     alert("test2");
 }
 
-function openPopup(div) {
-    const childrenDiv = div.closest('.children');
-    if (childrenDiv) {
-        childrenDiv.style.display = 'inherit';
-    }
-}
-
 function quitPopup(div) {
     const parentDiv = div.closest('.parent');
     if (parentDiv) {
         parentDiv.style.display = 'none';
     }
 }
-
 
 function createStreamerDiv(name) {
     const streamerDiv = document.createElement("div");

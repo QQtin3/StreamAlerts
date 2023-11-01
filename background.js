@@ -1,8 +1,8 @@
 /*const nickname = "SiirZax";
-const twitchUrl = `https://www.twitch.tv/${nickname}`;
-const APIurl = `https://gql.twitch.tv/gql`;
+const TWITCH_URL = `https://www.twitch.tv/${nickname}`;
+const API_URL = `https://gql.twitch.tv/gql`;
 
-const body = `[
+const BODY = `[
   {
       "operationName": "VideoPlayerStreamMetadata",
       "variables": {
@@ -16,7 +16,7 @@ const body = `[
       }
   }
 ]`
-const headers = {
+const HEADERS = {
     'Client-Id': "kimne78kx3ncx6brgo4mv6wki5h1ko",
     'Client-Session-Id': "dbbc595729568658",
     'Client-Version': "51d9bb9b-ddab-49c5-9fb6-b236934f29e8",
@@ -33,7 +33,13 @@ async function fetchTwitchAPI(url, header, body) {
     return data.json();
 }
 
-fetchTwitchAPI().then(result => console.log(result));*/
+fetchTwitchAPI().then(result => console.log(result));
 
+module.exports = {
+    fetchTwitchAPI: fetchTwitchAPI,
+    API_URL: API_URL,
+    BODY: BODY,
+    HEADERS: HEADERS
+};*/
 
 
