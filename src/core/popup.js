@@ -5,8 +5,6 @@ const addButtonElement = document.getElementById("add-button");
 const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
 const contentContainer = document.getElementById("content");
-const quitButtons = document.querySelectorAll(".quit");
-const nameInputContent = document.getElementById("name-input").value;
 
 let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac (mec bro hermano)", "Omg wtf"]
 
@@ -37,7 +35,7 @@ function settingsButton() {
 }
 
 function quitPopup(div) {
-    const parentDiv = div.closest('.parent');
+    const parentDiv = document.getElementById(div);
     if (parentDiv) {
         parentDiv.style.display = 'none';
     }
@@ -88,13 +86,22 @@ function setupStreamerDiv() {
     }
 }
 
-addButtonElement.addEventListener("click", addStreamer);
+addButtonElement.addEventListener("click", () => {
+    document.getElementById("popup-add").style.display = "block";
+});
 removeButtonElement.addEventListener("click", removeStreamer);
 settingsButtonElement.addEventListener("click", settingsButton);
 
-quitButtons.forEach(quitDiv => {
-    quitDiv.addEventListener("click", quitPopup(quitDiv));
-})
+/* Add new streamer with the input */
+document.getElementById("submit-btn-name-input").addEventListener("click", () => {
+    let nameInputContent = document.getElementById("name-input").value;
+    addStreamer(nameInputContent);
+    quitPopup("popup-add");
+});
+
+document.getElementById("popup-quit-add").addEventListener("click", () => {
+    quitPopup("popup-add");
+});
 
 
 document.addEventListener("DOMContentLoaded", function () {

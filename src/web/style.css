@@ -243,11 +243,14 @@ header img {
 .quit {
     position: fixed;
     background: transparent;
-    top: 15%;
-    right: 80%;
+    top: 2%;
+    left: 80%;
 }
 
-.quit img {
+.quit button {
     height: 48px;
+    width: 48px;
+    background: url("../../img/quit.png");
+    background-size: cover;
     border-radius: 50%;
 }
