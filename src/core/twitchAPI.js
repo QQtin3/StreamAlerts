@@ -98,7 +98,3 @@ export async function fetchTwitchAPIStream(streamersList) {
     });
     return data;
 }
-
-export async function getStreamerId(streamersList) {
-    let result = await fetchTwitchAPIUser(streamersList);
-}

@@ -6,11 +6,14 @@
   "version": "0",
   "permissions": [
     "alarms",
-    "notifications"
+    "notifications",
+    "storage"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
+
   "action": {
     "default_popup": "src/web/popup.html",
     "default_icon": {
