@@ -2,14 +2,23 @@ import {fetchGqlAPI, fetchTwitchAPIStream, fetchTwitchAPIUser, getBody} from "./
 import {createStreamerDiv} from "./popup.js";
 
 export async function addChannel(name, streamersList) {
-    let twitchChannelURL = `https://www.twitch.tv/${name}`;
     let doesUserExists = await doesChannelExists(name);
-    if (streamersList.includes(name)) {
-        return -2;
+    let streamerID = await getStreamerID(name);
+    if (streamersList.includes(streamerID)) {
+        return {
+            result: -2,
+            STREAMER_ID: streamerID
+        };
     } else if (!doesUserExists) {
-        return -1;
+        return {
+            result: -1,
+            STREAMER_ID: streamerID
+        };
     } else {
-        return 1;
+        return {
+            result: 1,
+            STREAMER_ID: streamerID
+        };
     }
 }
 
@@ -19,20 +28,26 @@ export async function doesChannelExists(name) {
 }
 
 export async function isOnLive(name) {
-    let data = await fetchGqlAPI(getBody(name))
-    return !!data[0]?.data?.user?.stream?.id
+    let data = await fetchGqlAPI(getBody(name));
+    return !!data[0]?.data?.user?.stream?.id;
+}
+
+async function getStreamerID(name) {
+    let data = await fetchGqlAPI(getBody(name));
+    return data[0]?.data?.user?.id;
 }
 
 export async function addStreamer(name, streamersList) {
-    let resultChannel = await addChannel(name, streamersList);
-    if (resultChannel > 0) {
-        const index = streamersList.length;
-        streamersList.push(name);
+    const {result, STREAMER_ID} = await addChannel(name, streamersList);
+    console.log("result: " + result);
+    if (result > 0) {
+        streamersList.push(STREAMER_ID);
         const streamerData = await fetchTwitchAPIUser(streamersList);
         const streamData = await fetchTwitchAPIStream(streamersList);
-        await createStreamerDiv(streamerData, streamData, index);
+        await createStreamerDiv(streamerData, streamData, STREAMER_ID);
     }
-    switch (resultChannel) {
+
+    switch (result) {
         case -2:
             alert(`Value error : ${name} is already in the list!`);
             break;

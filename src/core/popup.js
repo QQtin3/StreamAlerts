@@ -21,9 +21,8 @@ function quitPopup(divName) {
 
 async function getStatusPath(name) {
     let isLive = await isOnLive(name);
-    return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png"
+    return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png";
 }
-
 export async function createStreamerDiv(streamerData, streamData, id) {
     console.log(id);
     console.log(streamerData);
@@ -63,25 +62,26 @@ export async function createStreamerDiv(streamerData, streamData, id) {
         nameDiv.appendChild(twitchPartnerImg);
     }
 
-    /* TODO: Fix displayGame (length is incorrect)
-    if (streamData[id].length() !== 0) {
-        const streamInfo = document.createElement("p");
-        streamInfo.textContent = `"${streamData[id].title}"  sur  ${streamData[id].game_name}`;
-        nameDiv.appendChild(streamInfo);
-
-        nameHeading.style.marginBottom = "0";
-    }*/
-
     namePictureDiv.appendChild(logoDiv);
     namePictureDiv.appendChild(nameDiv);
 
     const statusDiv = document.createElement("div");
     statusDiv.className = "status";
     const statusImg = document.createElement("img");
-    statusImg.src = await getStatusPath(name);
+    statusImg.src = "../../img/offline-stream.png";  // Voir condition du dessous pour le cas online
     statusImg.alt = "Streamer status";
     statusImg.id = `streamer${id}-status`;
     statusDiv.appendChild(statusImg);
+
+    if (!!streamData[id]?.id) {
+        statusImg.src = "../../img/online-stream.png";
+
+        const streamInfo = document.createElement("p");
+        streamInfo.textContent = `"${streamData[id].title}"  sur  ${streamData[id].game_name}`;
+        nameDiv.appendChild(streamInfo);
+
+        nameHeading.style.marginBottom = "0";
+    }
 
     channelLink.appendChild(namePictureDiv);
     channelLink.appendChild(statusDiv);
