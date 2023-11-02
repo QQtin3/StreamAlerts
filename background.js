@@ -1,4 +1,3 @@
-/* Official Twitch API */
 const CLIENT_ID = "gkh1z7e7a50gj6cj71obcbu1mgmiql";
 const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
 
@@ -74,6 +73,11 @@ function notificationSender(notificationID, nickname, iconUrl) {
         });
 }
 
+async function getStatusPath(name) {
+    let isLive = await isOnLive(name);
+    return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png";
+}
+
 function notificationRemover(notificationID) {
     chrome.notifications.clear(notificationID);
 }
@@ -85,14 +89,15 @@ async function main(streamersList) {
 }
 
 
-let streamersList = [38978803, 35906674, 498974198];
 
 chrome.alarms.create({periodInMinutes: 0.1});
 
-chrome.notifications.onClicked.addListener(() => {
-    chrome.tabs.create({url: twitchUrl});
+chrome.notifications.onClicked.addListener(async (notificationID) => {
+    let streamerData = await fetchTwitchAPIUser([notificationID]);
+    chrome.tabs.create({url: `https://twitch.tv/${streamerData[notificationID].login}`});
 });
 
 chrome.alarms.onAlarm.addListener(() => console.log("TEST"));
 
+chrome.storage.local.set({"streamersList": []});
 main(streamersList);

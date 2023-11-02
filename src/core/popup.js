@@ -6,7 +6,11 @@ const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
 const contentContainer = document.getElementById("content");
 
-let streamersList = [38978803, 35906674, 498974198];
+let streamersList = new Promise((resolve) => {
+    chrome.storage.local.get(["streamersList"], function (result) {
+        resolve(result);
+    });
+});
 
 function settingsButton() {
     alert("test2");
@@ -19,15 +23,7 @@ function quitPopup(divName) {
     }
 }
 
-async function getStatusPath(name) {
-    let isLive = await isOnLive(name);
-    return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png";
-}
 export async function createStreamerDiv(streamerData, streamData, id) {
-    console.log(id);
-    console.log(streamerData);
-    console.log(streamData);
-
     const streamerDiv = document.createElement("div");
     streamerDiv.className = `streamer`;
     streamerDiv.id = `streamer${id}`;
