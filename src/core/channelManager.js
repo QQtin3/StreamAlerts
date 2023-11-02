@@ -4,6 +4,7 @@ import {createStreamerDiv} from "./popup.js";
 export async function addChannel(name, streamersList) {
     let doesUserExists = await doesChannelExists(name);
     let streamerID = await getStreamerID(name);
+    streamerID = parseInt(streamerID);  // Avoid comparison between int & string
     if (streamersList.includes(streamerID)) {
         return {
             result: -2,
@@ -58,11 +59,13 @@ export async function addStreamer(name, streamersList) {
     }
 }
 
-export function removeStreamer(name, streamersList) {
-    let index = streamersList.indexOf(name);
-    if (index !== -1) {
-        streamersList.slice(0, -1);
-        document.getElementById(`streamer${index}`).remove();
+export async function removeStreamer(name, streamersList) {
+    let STREAMER_ID = await getStreamerID(name);
+    STREAMER_ID = parseInt(STREAMER_ID);
+    if (streamersList.includes(STREAMER_ID)) {
+        const index =  streamersList.indexOf(STREAMER_ID)
+        streamersList.splice(index, 1);
+        document.getElementById(`streamer${STREAMER_ID}`).remove();
     } else {
         alert("Error 404 : Channel not found!");
     }

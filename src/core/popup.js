@@ -126,7 +126,7 @@ document.getElementById("popup-quit-add").addEventListener("click", () => {
 
 document.getElementById("submit-btn-name-input-remove").addEventListener("click", () => {
     let nameInputContent = document.getElementById("name-input-remove").value;
-    removeStreamer(nameInputContent);
+    removeStreamer(nameInputContent, streamersList);
     quitPopup("popup-remove");
 });
 
