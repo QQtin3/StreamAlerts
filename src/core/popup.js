@@ -6,7 +6,7 @@ const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
 const contentContainer = document.getElementById("content");
 
-let streamersList = ["SiirZax", "Marco", "Nartax", "Ordrac"];
+let streamersList = [38978803, 35906674, 498974198];
 
 function settingsButton() {
     alert("test2");
@@ -24,16 +24,18 @@ async function getStatusPath(name) {
     return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png"
 }
 
-export async function createStreamerDiv(streamerData, streamData, i) {
+export async function createStreamerDiv(streamerData, streamData, id) {
+    console.log(id);
     console.log(streamerData);
     console.log(streamData);
+
     const streamerDiv = document.createElement("div");
     streamerDiv.className = `streamer`;
-    streamerDiv.id = `streamer${i}`;
+    streamerDiv.id = `streamer${id}`;
 
     const channelLink = document.createElement("a");
     channelLink.className = "channelLink";
-    channelLink.href = `https://twitch.tv/${streamerData.data[i].login}`;
+    channelLink.href = `https://twitch.tv/${streamerData[id].login}`;
     channelLink.target = '_blank';
 
     const namePictureDiv = document.createElement("div");
@@ -43,7 +45,7 @@ export async function createStreamerDiv(streamerData, streamData, i) {
     logoDiv.className = "logo";
 
     const logoImg = document.createElement("img");
-    logoImg.src = streamerData.data[i].profile_image_url;
+    logoImg.src = streamerData[id].profile_image_url;
     logoImg.alt = "Streamer's Logo";
     logoDiv.appendChild(logoImg);
 
@@ -51,22 +53,24 @@ export async function createStreamerDiv(streamerData, streamData, i) {
     nameDiv.className = "name";
 
     const nameHeading = document.createElement("h1");
-    nameHeading.textContent = streamerData.data[i].display_name;
+    nameHeading.textContent = streamerData[id].display_name;
     nameDiv.appendChild(nameHeading);
 
-    if (streamerData.data[i].broadcaster_type === "partner") {
+    if (streamerData[id].broadcaster_type === "partner") {
         const twitchPartnerImg = document.createElement("img");
         twitchPartnerImg.src = "../../img/twitch-certified-logo.png";
         twitchPartnerImg.alt = "Twitch Partner";
+        nameDiv.appendChild(twitchPartnerImg);
     }
 
-    if (streamData.data.length !== 0) {
+    /* TODO: Fix displayGame (length is incorrect)
+    if (streamData[id].length() !== 0) {
         const streamInfo = document.createElement("p");
-        streamInfo.textContent = `"${streamData.data[i].title}"  sur  ${streamData.data[i].game_name}`;
+        streamInfo.textContent = `"${streamData[id].title}"  sur  ${streamData[id].game_name}`;
         nameDiv.appendChild(streamInfo);
 
         nameHeading.style.marginBottom = "0";
-    }
+    }*/
 
     namePictureDiv.appendChild(logoDiv);
     namePictureDiv.appendChild(nameDiv);
@@ -76,7 +80,7 @@ export async function createStreamerDiv(streamerData, streamData, i) {
     const statusImg = document.createElement("img");
     statusImg.src = await getStatusPath(name);
     statusImg.alt = "Streamer status";
-    statusImg.id = `streamer${i}-status`;
+    statusImg.id = `streamer${id}-status`;
     statusDiv.appendChild(statusImg);
 
     channelLink.appendChild(namePictureDiv);
@@ -88,16 +92,18 @@ export async function createStreamerDiv(streamerData, streamData, i) {
 async function setupStreamerDiv(streamersList) {
     const streamerData = await fetchTwitchAPIUser(streamersList);
     const streamData = await fetchTwitchAPIStream(streamersList);
-    for (let i = 0; i < streamerData.data.length; i++) {
-        await createStreamerDiv(streamerData, streamData, i);
-    }
+
+    streamersList.forEach((id) =>
+        createStreamerDiv(streamerData, streamData, id));
 }
 
-async function dynamicStatusChange(streamers) {
-    for (let i = 0; i < streamers.length; i++) {
+
+// TODO : Setup dynamic change
+/*async function dynamicStatusChange(streamersList) {
+    for (let i = 0; i < streamersList.length; i++) {
         document.getElementById(`streamer${i}-status`).src = await getStatusPath(streamers[i]);
     }
-}
+}*/
 
 addButtonElement.addEventListener("click", () => {
     document.getElementById("popup-add").style.display = "block";

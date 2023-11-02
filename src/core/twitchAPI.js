@@ -41,28 +41,64 @@ export async function fetchTwitchAPIUser(streamersList) {
     if (!Array.isArray(streamersList)) {
         throw new Error('parameter must be an array!');
     }
-    let apiUrl = `https://api.twitch.tv/helix/users?login=` + streamersList.join('&login=');
-    let data = await fetch(apiUrl, {
+    let apiUrl = `https://api.twitch.tv/helix/users?id=` + streamersList.join('&id=');
+    let result = await fetch(apiUrl, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${TOKEN_ID}`,
             'Client-Id': CLIENT_ID
         }
-    })
-    return data.json();
+    });
+    const data = {};
+    let resultJson = await result.json();
+    resultJson["data"].forEach((result) => data[result.id] = {
+        "login": result.login,
+        "display_name": result.display_name,
+        "type": result.type,
+        "broadcaster_type": result.broadcaster_type,
+        "description": result.description,
+        "profile_image_url": result.profile_image_url,
+        "offline_image_url": result.offline_image_url,
+        "view_count": result.view_count,
+        "email": result.email,
+        "created_at": result.created_at
+    });
+    return data;
 }
 
 export async function fetchTwitchAPIStream(streamersList) {
     if (!Array.isArray(streamersList)) {
         throw new Error('parameter must be an array!');
     }
-    const apiUrl = `https://api.twitch.tv/helix/streams?user_login=` + streamersList.join('&user_login=');
-    let data = await fetch(apiUrl, {
+    const apiUrl = `https://api.twitch.tv/helix/streams?user_id=` + streamersList.join('&user_id=');
+    const result = await fetch(apiUrl, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${TOKEN_ID}`,
             'Client-Id': CLIENT_ID
         }
-    })
-    return data.json();
+    });
+    const data = {};
+    let resultJson = await result.json();
+    resultJson["data"].forEach((result) => data[result.user_id] = {
+        "id": result.id,
+        "user_login": result.user_login,
+        "user_name": result.user_name,
+        "game_id": result.game_id,
+        "game_name": result.game_name,
+        "type": result.type,
+        "title": result.title,
+        "tags": result.tags,
+        "viewer_count": result.viewer_count,
+        "started_at": result.started_at,
+        "language": result.language,
+        "thumbnail_url": result.thumbnail_url,
+        "tag_ids": result.tag_ids,
+        "is_mature": result.is_mature
+    });
+    return data;
+}
+
+export async function getStreamerId(streamersList) {
+    let result = await fetchTwitchAPIUser(streamersList);
 }
