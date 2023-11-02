@@ -1,12 +1,12 @@
 import {addChannel, isOnLive} from "./channelManager.js";
-
+import {fetchTwitchAPIStream, fetchTwitchAPIUser} from "./twitchAPI.js";
 
 const addButtonElement = document.getElementById("add-button");
 const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
 const contentContainer = document.getElementById("content");
 
-let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac (mec bro hermano)", "Omg wtf"]
+let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac"]
 
 async function addStreamer(name) {
     let resultChannel = await addChannel(name, streamerData);
@@ -58,6 +58,10 @@ async function getStatusPath(name) {
 }
 
 async function createStreamerDiv(name, i) {
+    let streamerData = await fetchTwitchAPIUser(name);
+    let streamData = await fetchTwitchAPIStream(name);
+    console.log(streamData)
+
     const streamerDiv = document.createElement("div");
     streamerDiv.className = `streamer`;
     streamerDiv.id = `streamer${i}`;
@@ -74,7 +78,7 @@ async function createStreamerDiv(name, i) {
     logoDiv.className = "logo";
 
     const logoImg = document.createElement("img");
-    logoImg.src = "../../img/twitch-certified-logo.png";
+    logoImg.src = streamerData.data[0].profile_image_url;
     logoImg.alt = "Streamer's Logo";
     logoDiv.appendChild(logoImg);
 
@@ -82,8 +86,16 @@ async function createStreamerDiv(name, i) {
     nameDiv.className = "name";
 
     const nameHeading = document.createElement("h1");
-    nameHeading.textContent = name;
+    nameHeading.textContent = streamerData.data[0].display_name;
     nameDiv.appendChild(nameHeading);
+
+    if (streamData.data.length !== 0) {
+        const streamInfo = document.createElement("p");
+        streamInfo.textContent = `"${streamData.data[0].title}"  sur  ${streamData.data[0].game_name}`;
+        nameDiv.appendChild(streamInfo);
+
+        nameHeading.style.marginBottom = "0";
+    }
 
     namePictureDiv.appendChild(logoDiv);
     namePictureDiv.appendChild(nameDiv);

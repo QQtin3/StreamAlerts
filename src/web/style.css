@@ -110,8 +110,12 @@ header img {
     margin: 3% 20px;
 }
 
+.streamer {
+    margin: 15px 0;
+}
+
 .channelLink {
-    max-height: 80px;
+    /*max-height: 80px;*/
     margin: 0;
     padding: 5px;
     display: flex;
@@ -145,11 +149,8 @@ header img {
 }
 
 .channelLink .name {
-    flex: 4;
     color: black;
     font-family: "Roboto", sans-serif;
-    text-align: left;
-    margin: 0;
 }
 
 .channelLink .status {
@@ -257,4 +258,12 @@ header img {
     background: url("../../img/quit.png");
     background-size: cover;
     border-radius: 50%;
+}
+
+.name p {
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.name h1 {
 }

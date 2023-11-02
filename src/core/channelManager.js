@@ -1,4 +1,4 @@
-import {API_URL, HEADERS, fetchTwitchAPI, getBody} from "./twitchAPI.js";
+import {API_URL, HEADERS, fetchGqlAPI, getBody} from "./twitchAPI.js";
 
 export async function addChannel(name, streamers) {
     let twitchChannelURL = `https://www.twitch.tv/${name}`;
@@ -19,7 +19,7 @@ export async function addChannel(name, streamers) {
 }
 
 export async function doesChannelExists(name) {
-    let data = await fetchTwitchAPI(API_URL, HEADERS, getBody(name));
+    let data = await fetchGqlAPI(API_URL, HEADERS, getBody(name));
     return !!data[0]?.data?.user;
 }
 
@@ -27,6 +27,6 @@ export async function isPartner(twitchChannelURL) {
 }
 
 export async function isOnLive(name) {
-    let data = await fetchTwitchAPI(API_URL, HEADERS, getBody(name))
+    let data = await fetchGqlAPI(API_URL, HEADERS, getBody(name))
     return !!data[0]?.data?.user?.stream?.id
 }
