@@ -115,7 +115,6 @@ header img {
 }
 
 .channelLink {
-    /*max-height: 80px;*/
     margin: 0;
     padding: 5px;
     display: flex;
@@ -130,16 +129,14 @@ header img {
 
 .channelLink .name-picture {
     flex: 4;
-    display: grid;
-    grid: auto-flow / 30% 70%;
+    display: flex;
 }
 
 .channelLink .logo {
-    flex: 2;
     display: flex;
     justify-content: left;
     align-items: center;
-    margin-left: 2%;
+    margin: 0 4% 0 2%;
 }
 
 .channelLink .logo img {
@@ -148,15 +145,10 @@ header img {
     border: solid 2px black;
 }
 
-.channelLink .name {
-    color: black;
-    font-family: "Roboto", sans-serif;
-}
-
 .channelLink .status {
     flex: 1;
-    max-height: 60px;
-    max-width: 60px;
+    height: 100%;
+    width: 100%;
 }
 
 .channelLink .status img {
@@ -260,10 +252,19 @@ header img {
     border-radius: 50%;
 }
 
-.name p {
+.name {
+    display: flex;
+    justify-items: center;
+    align-items: center;
     margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: 100%;
+    color: black;
+    font-family: "Roboto", sans-serif;
 }
-.name h1 {
+
+.name img {
+    margin: 0 0 0 10px;
+    height: 32px;
 }
+
+

@@ -1,5 +1,5 @@
-export const API_URL = `https://gql.twitch.tv/gql`;
-export const HEADERS = {
+const API_URL = `https://gql.twitch.tv/gql`;
+const HEADERS = {
     'Client-Id': "kimne78kx3ncx6brgo4mv6wki5h1ko",
     'Client-Session-Id': "dbbc595729568658",
     'Client-Version': "51d9bb9b-ddab-49c5-9fb6-b236934f29e8",
@@ -27,18 +27,21 @@ export function getBody(nickname) {
 ]`;
 }
 
-export async function fetchGqlAPI(url, header, body) {
+export async function fetchGqlAPI(body) {
     let data = await fetch(
-        url, {
+        API_URL, {
             method: "POST",
-            headers: header,
+            headers: HEADERS,
             body: body
         })
     return data.json();
 }
 
-export async function fetchTwitchAPIUser(name){
-    const apiUrl = `https://api.twitch.tv/helix/users?login=${name}`;
+export async function fetchTwitchAPIUser(streamersList) {
+    if (!Array.isArray(streamersList)) {
+        throw new Error('parameter must be an array!');
+    }
+    let apiUrl = `https://api.twitch.tv/helix/users?login=` + streamersList.join('&login=');
     let data = await fetch(apiUrl, {
         method: 'GET',
         headers: {
@@ -49,8 +52,11 @@ export async function fetchTwitchAPIUser(name){
     return data.json();
 }
 
-export async function fetchTwitchAPIStream(name){
-    const apiUrl = `https://api.twitch.tv/helix/streams?user_login=${name}`;
+export async function fetchTwitchAPIStream(streamersList) {
+    if (!Array.isArray(streamersList)) {
+        throw new Error('parameter must be an array!');
+    }
+    const apiUrl = `https://api.twitch.tv/helix/streams?user_login=` + streamersList.join('&user_login=');
     let data = await fetch(apiUrl, {
         method: 'GET',
         headers: {

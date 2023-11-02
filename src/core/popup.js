@@ -1,4 +1,4 @@
-import {addChannel, isOnLive} from "./channelManager.js";
+import {isOnLive, addStreamer, removeStreamer} from "./channelManager.js";
 import {fetchTwitchAPIStream, fetchTwitchAPIUser} from "./twitchAPI.js";
 
 const addButtonElement = document.getElementById("add-button");
@@ -6,47 +6,14 @@ const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
 const contentContainer = document.getElementById("content");
 
-let streamerData = ["SiirZax", "Marco", "Nartax", "Ordrac"]
-
-async function addStreamer(name) {
-    let resultChannel = await addChannel(name, streamerData);
-    switch (resultChannel) {
-        case -2:
-            alert(`Value error : ${name} is already in the list!`);
-            break;
-
-        case -1:
-            alert("Error 404 : Channel not found!");
-            break;
-
-        case 1:
-            streamerData.push(name);
-            await createStreamerDiv(name);
-            break;
-
-        case 2:
-            streamerData.push(name);
-            await createStreamerDiv(name);
-            break;
-    }
-}
-
-function removeStreamer(name) {
-    let index = streamerData.indexOf(name);
-    if (index !== -1) {
-        streamerData.splice(index, 1);
-        document.getElementById(`streamer${index}`).remove();
-    } else {
-        alert("Error 404 : Channel not found!");
-    }
-}
+let streamersList = ["SiirZax", "Marco", "Nartax", "Ordrac"];
 
 function settingsButton() {
     alert("test2");
 }
 
-function quitPopup(div) {
-    const parentDiv = document.getElementById(div);
+function quitPopup(divName) {
+    const parentDiv = document.getElementById(divName);
     if (parentDiv) {
         parentDiv.style.display = 'none';
     }
@@ -57,18 +24,16 @@ async function getStatusPath(name) {
     return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png"
 }
 
-async function createStreamerDiv(name, i) {
-    let streamerData = await fetchTwitchAPIUser(name);
-    let streamData = await fetchTwitchAPIStream(name);
-    console.log(streamData)
-
+export async function createStreamerDiv(streamerData, streamData, i) {
+    console.log(streamerData);
+    console.log(streamData);
     const streamerDiv = document.createElement("div");
     streamerDiv.className = `streamer`;
     streamerDiv.id = `streamer${i}`;
 
     const channelLink = document.createElement("a");
     channelLink.className = "channelLink";
-    channelLink.href = `https://twitch.tv/${name}`;
+    channelLink.href = `https://twitch.tv/${streamerData.data[i].login}`;
     channelLink.target = '_blank';
 
     const namePictureDiv = document.createElement("div");
@@ -78,7 +43,7 @@ async function createStreamerDiv(name, i) {
     logoDiv.className = "logo";
 
     const logoImg = document.createElement("img");
-    logoImg.src = streamerData.data[0].profile_image_url;
+    logoImg.src = streamerData.data[i].profile_image_url;
     logoImg.alt = "Streamer's Logo";
     logoDiv.appendChild(logoImg);
 
@@ -86,12 +51,18 @@ async function createStreamerDiv(name, i) {
     nameDiv.className = "name";
 
     const nameHeading = document.createElement("h1");
-    nameHeading.textContent = streamerData.data[0].display_name;
+    nameHeading.textContent = streamerData.data[i].display_name;
     nameDiv.appendChild(nameHeading);
+
+    if (streamerData.data[i].broadcaster_type === "partner") {
+        const twitchPartnerImg = document.createElement("img");
+        twitchPartnerImg.src = "../../img/twitch-certified-logo.png";
+        twitchPartnerImg.alt = "Twitch Partner";
+    }
 
     if (streamData.data.length !== 0) {
         const streamInfo = document.createElement("p");
-        streamInfo.textContent = `"${streamData.data[0].title}"  sur  ${streamData.data[0].game_name}`;
+        streamInfo.textContent = `"${streamData.data[i].title}"  sur  ${streamData.data[i].game_name}`;
         nameDiv.appendChild(streamInfo);
 
         nameHeading.style.marginBottom = "0";
@@ -114,9 +85,11 @@ async function createStreamerDiv(name, i) {
     contentContainer.appendChild(streamerDiv);
 }
 
-async function setupStreamerDiv() {
-    for (let i = 0; i < streamerData.length; i++) {
-        await createStreamerDiv(streamerData[i], i);
+async function setupStreamerDiv(streamersList) {
+    const streamerData = await fetchTwitchAPIUser(streamersList);
+    const streamData = await fetchTwitchAPIStream(streamersList);
+    for (let i = 0; i < streamerData.data.length; i++) {
+        await createStreamerDiv(streamerData, streamData, i);
     }
 }
 
@@ -137,7 +110,7 @@ settingsButtonElement.addEventListener("click", settingsButton);
 /* Add new streamer with the input */
 document.getElementById("submit-btn-name-input-add").addEventListener("click", async () => {
     let nameInputContent = document.getElementById("name-input-add").value;
-    await addStreamer(nameInputContent);
+    await addStreamer(nameInputContent, streamersList);
     quitPopup("popup-add");
 });
 
@@ -157,11 +130,7 @@ document.getElementById("popup-quit-remove").addEventListener("click", () => {
 
 
 document.addEventListener("DOMContentLoaded", async function () {
-    await setupStreamerDiv();
+    await setupStreamerDiv(streamersList);
 });
 
 /* AUTO UPDATE Status each minute*/
-chrome.alarms.create({periodInMinutes: 1});
-chrome.alarms.onAlarm.addListener(async () => {
-    await dynamicStatusChange()
-});
