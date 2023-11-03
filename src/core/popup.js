@@ -6,12 +6,6 @@ const removeButtonElement = document.getElementById("remove-button");
 const settingsButtonElement = document.getElementById("settings-button");
 const contentContainer = document.getElementById("content");
 
-let streamersList = new Promise((resolve) => {
-    chrome.storage.local.get(["streamersList"], function (result) {
-        resolve(result);
-    });
-});
-
 function settingsButton() {
     alert("test2");
 }
@@ -112,7 +106,13 @@ settingsButtonElement.addEventListener("click", settingsButton);
 /* Add new streamer with the input */
 document.getElementById("submit-btn-name-input-add").addEventListener("click", async () => {
     let nameInputContent = document.getElementById("name-input-add").value;
-    await addStreamer(nameInputContent, streamersList);
+    let streamersList = new Promise((resolve) => {
+        chrome.storage.local.get(["streamersList"], function (result) {
+            resolve(result);
+        });
+    });
+    console.log("list: " + streamersList);
+    await addStreamer(nameInputContent, []);
     quitPopup("popup-add");
 });
 
@@ -120,9 +120,14 @@ document.getElementById("popup-quit-add").addEventListener("click", () => {
     quitPopup("popup-add");
 });
 
-document.getElementById("submit-btn-name-input-remove").addEventListener("click", () => {
+document.getElementById("submit-btn-name-input-remove").addEventListener("click", async() => {
     let nameInputContent = document.getElementById("name-input-remove").value;
-    removeStreamer(nameInputContent, streamersList);
+    let streamersList = new Promise((resolve) => {
+        chrome.storage.local.get(["streamersList"], function (result) {
+            resolve(result);
+        });
+    });
+    await removeStreamer(nameInputContent, streamersList);
     quitPopup("popup-remove");
 });
 
@@ -132,6 +137,14 @@ document.getElementById("popup-quit-remove").addEventListener("click", () => {
 
 
 document.addEventListener("DOMContentLoaded", async function () {
+    let streamersList = new Promise((resolve) => {
+        chrome.storage.sync.get(["streamersList"], function (result) {
+            resolve(result);
+        });
+    });
+    console.log(streamersList);
+    console.log(streamersList);
+    console.log(streamersList);
     await setupStreamerDiv(streamersList);
 });
 

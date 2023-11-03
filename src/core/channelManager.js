@@ -43,7 +43,7 @@ export async function addStreamer(name, streamersList) {
     console.log("result: " + result);
     if (result > 0) {
         streamersList.push(STREAMER_ID);
-        chrome.storage.local.set({"streamersList": streamersList});
+        chrome.storage.sync.set({"streamersList": streamersList});
         const streamerData = await fetchTwitchAPIUser(streamersList);
         const streamData = await fetchTwitchAPIStream(streamersList);
         await createStreamerDiv(streamerData, streamData, STREAMER_ID);
@@ -66,7 +66,7 @@ export async function removeStreamer(name, streamersList) {
     if (streamersList.includes(STREAMER_ID)) {
         const index =  streamersList.indexOf(STREAMER_ID)
         streamersList.splice(index, 1);
-        chrome.storage.local.set({"streamersList": streamersList});
+        chrome.storage.sync.set({"streamersList": streamersList});
         document.getElementById(`streamer${STREAMER_ID}`).remove();
     } else {
         alert("Error 404 : Channel not found!");

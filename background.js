@@ -73,31 +73,33 @@ function notificationSender(notificationID, nickname, iconUrl) {
         });
 }
 
-async function getStatusPath(name) {
+/*async function getStatusPath(name) {
     let isLive = await isOnLive(name);
     return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png";
-}
+}*/
 
 function notificationRemover(notificationID) {
     chrome.notifications.clear(notificationID);
 }
 
-async function main(streamersList) {
-    let streamersData = await fetchTwitchAPIUser(streamersList);
-    streamersList.forEach((id) =>
-        notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url))
+async function main() {
+    chrome.storage.sync.get(["streamersList"]).then(async (result) => {
+        console.log(result.streamersList);
+        if (result.streamersList.length > 0) {
+            let streamersData = await fetchTwitchAPIUser(result.streamersList);
+            result.streamersList.forEach((id) =>
+                notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url))
+        }
+    });
+
 }
 
 
-
 chrome.alarms.create({periodInMinutes: 0.1});
-
+chrome.alarms.onAlarm.addListener(main());
 chrome.notifications.onClicked.addListener(async (notificationID) => {
     let streamerData = await fetchTwitchAPIUser([notificationID]);
     chrome.tabs.create({url: `https://twitch.tv/${streamerData[notificationID].login}`});
 });
 
-chrome.alarms.onAlarm.addListener(() => console.log("TEST"));
-
-chrome.storage.local.set({"streamersList": []});
-main(streamersList);
+chrome.storage.sync.set({streamersList: []});
