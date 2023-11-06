@@ -13,6 +13,10 @@ async function fetchTwitchAPIUser(streamersList) {
             'Client-Id': CLIENT_ID
         }
     });
+    if (!result.ok) {
+        throw new Error(`error! Error: ${result.error} Status: ${result.status} Message: ${result.message}`);
+    }
+
     const data = {};
     let resultJson = await result.json();
     resultJson["data"].forEach((result) => data[result.id] = {
@@ -83,17 +87,28 @@ function notificationRemover(notificationID) {
 }
 
 async function main() {
-    chrome.storage.sync.get(["streamersList"]).then(async (result) => {
-        console.log(result.streamersList);
-        if (result.streamersList.length > 0) {
-            let streamersData = await fetchTwitchAPIUser(result.streamersList);
-            result.streamersList.forEach((id) =>
-                notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url))
-        }
-    });
-
+    let streamersList = await getStreamersList();
+    if (streamersList.length > 0) {
+        let streamersData = await fetchTwitchAPIUser(streamersList);
+        streamersList.forEach((id) =>
+            notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url))
+    }
 }
 
+
+async function getStreamersList() {
+    const streamersList = await new Promise((resolve) => {
+        chrome.storage.local.get(["streamersList"], function (result) {
+            resolve(result.streamersList);
+        });
+    });
+
+    if (streamersList === undefined) {
+        chrome.storage.local.set({"streamersList": []});
+    }
+
+    return streamersList;
+}
 
 chrome.alarms.create({periodInMinutes: 0.1});
 chrome.alarms.onAlarm.addListener(main());
@@ -101,5 +116,3 @@ chrome.notifications.onClicked.addListener(async (notificationID) => {
     let streamerData = await fetchTwitchAPIUser([notificationID]);
     chrome.tabs.create({url: `https://twitch.tv/${streamerData[notificationID].login}`});
 });
-
-chrome.storage.sync.set({streamersList: []});

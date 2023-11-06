@@ -49,6 +49,10 @@ export async function fetchTwitchAPIUser(streamersList) {
             'Client-Id': CLIENT_ID
         }
     });
+    if (!result.ok) {
+        throw new Error(`error! Error: ${result.error} Status: ${result.status} Message: ${result.message}`);
+    }
+
     const data = {};
     let resultJson = await result.json();
     resultJson["data"].forEach((result) => data[result.id] = {
