@@ -1,6 +1,3 @@
-const CLIENT_ID = "gkh1z7e7a50gj6cj71obcbu1mgmiql";
-const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
-
 async function fetchTwitchAPIUser(streamersList) {
     if (!Array.isArray(streamersList)) {
         throw new Error('parameter must be an array!');
