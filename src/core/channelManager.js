@@ -1,21 +1,24 @@
 import {fetchTwitchAPIStream, fetchTwitchAPIUser} from "./twitchAPI.js";
 import {createStreamerDiv} from "./popup.js";
 
+/**
+ * Required for addStreamer, check if the input corresponds to a streamer that exists and is not already in the list.
+ *
+ * @param name Streamer's name
+ * @return {result, STREAMER_ID} result & STREAMER_ID both int
+ */
 export async function addChannel(name) {
-    const streamersList = await getStreamersList();
+    const streamersList = getStreamersList();
     let streamerID = await getStreamerID(name);
-    if (streamerID === undefined) {
-        streamerID = -1;
-    }
-    streamerID = parseInt(streamerID);  // Avoid comparison between int & string
-    if (streamersList.includes(streamerID)) {
-        return {
-            result: -2,
-            STREAMER_ID: streamerID
-        };
-    } else if (streamerID === -1) {
+
+    if (streamerID === undefined) {  // Checks if streamer exists (-1 means not found)
         return {
             result: -1,
+            STREAMER_ID: streamerID
+        };
+    } else if (streamersList.includes(streamerID)) {  // Checks if is not already in the list
+        return {
+            result: -2,
             STREAMER_ID: streamerID
         };
     } else {
@@ -26,31 +29,40 @@ export async function addChannel(name) {
     }
 }
 
-export async function isOnLive(name) {
-    let nameTab = [name];
-}
-
+/**
+ * Get a streamer ID from their name and return it.
+ *
+ * @param name Streamer's name
+ * @return result Streamer's ID if they exist (int), else undefined
+ */
 async function getStreamerID(name) {
     let loginName = name.toLowerCase()
     let data = await fetchTwitchAPIUser([loginName], "login");
+
+    let result;
     if (data[loginName].id === null) {
-        return undefined;
+        result = undefined;
+    } else {
+        result = parseInt(data[loginName].id);
     }
-    else {
-        return data[loginName].id;
-    }
+    return result;
 }
 
+/**
+ * Add a streamer from the streamersList and add their div-box on the popup.
+ *
+ * @param name Streamer's name that you want to add from the list
+ */
 export async function addStreamer(name) {
-    const streamersList = await getStreamersList();
+    const streamersList = getStreamersList();
     const {result, STREAMER_ID} = await addChannel(name);
-    if (result > 0) {
+    if (result === 1) {
         streamersList.push(STREAMER_ID);
         chrome.storage.sync.set({"streamersList": streamersList});
         const streamerData = await fetchTwitchAPIUser(streamersList);
         const streamData = await fetchTwitchAPIStream(streamersList);
         await createStreamerDiv(streamerData, streamData, STREAMER_ID);
-        console.log("\"" + name + "\" was successfully added to the streamersList." )
+        console.log("\"" + name + "\" was successfully added to the streamersList.")
     }
 
     switch (result) {
@@ -64,22 +76,32 @@ export async function addStreamer(name) {
     }
 }
 
+/**
+ * Remove a streamer from the streamersList and remove their div-box on the popup.
+ *
+ * @param name Streamer's name that you want to remove from the list
+ */
 export async function removeStreamer(name) {
-    const streamersList = await getStreamersList();
-    let STREAMER_ID = await getStreamerID(name);
-    STREAMER_ID = parseInt(STREAMER_ID);
+    const streamersList = getStreamersList();
+    let streamerID = await getStreamerID(name);
 
-    if (streamersList.includes(STREAMER_ID)) {
-        const INDEX = streamersList.indexOf(STREAMER_ID)
+    if (streamersList.includes(streamerID)) {
+        const INDEX = streamersList.indexOf(streamerID)
         streamersList.splice(INDEX, 1);
         chrome.storage.sync.set({"streamersList": streamersList});
-        document.getElementById(`streamer${STREAMER_ID}`).remove();
-        console.log("\"" + name + "\" was successfully removed to the streamersList." )
+        document.getElementById(`streamer${streamerID}`).remove();
+        console.log("\"" + name + "\" was successfully removed to the streamersList.")
     } else {
         alert("Error 404 : Channel not found!");
     }
 }
 
+/**
+ * Get and returns the User's streamersList using 'chrome.storage' API
+ * (please refer to the official API for more details about it).
+ *
+ * @return Array fulfilled with Streamer(s) ID
+ */
 export async function getStreamersList() {
     return await new Promise((resolve) => {
         chrome.storage.sync.get(["streamersList"], function (result) {

@@ -1,8 +1,17 @@
-/* Official Twitch API */
+/* Official Twitch API Tokens*/
+// TODO: Replace this with an automatic system avoiding issues.
 const CLIENT_ID = "gkh1z7e7a50gj6cj71obcbu1mgmiql";
 const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
 
 
+/**
+ * Fetch Official Twitch API to return data about a Streamer (with his ID or name), data retrieved from this function
+ * can be found on the README.
+ *
+ * @param streamersList array fulfilled with IDs of Streamers or with names if type = "login"
+ * @param type default="id"
+ * @return data array fulfilled with exported data from the API
+ */
 export async function fetchTwitchAPIUser(streamersList, type = "id") {
     if (!Array.isArray(streamersList)) {
         throw new Error('Parameter must be an array!');
@@ -11,10 +20,8 @@ export async function fetchTwitchAPIUser(streamersList, type = "id") {
     let apiUrl;
     if (type === "id") {
         apiUrl = `https://api.twitch.tv/helix/users?id=` + streamersList.join('&id=');
-    } else if (type === "login") {
-        apiUrl = `https://api.twitch.tv/helix/users?login=` + streamersList.join('&login=');
     } else {
-        throw new Error('Type must be either "id" or "login" !');
+        apiUrl = `https://api.twitch.tv/helix/users?login=` + streamersList.join('&login=');
     }
 
     let result = await fetch(apiUrl, {
@@ -43,8 +50,7 @@ export async function fetchTwitchAPIUser(streamersList, type = "id") {
             "email": result.email,
             "created_at": result.created_at
         });
-    }
-    else {
+    } else {
         resultJson["data"].forEach((result) => data[result.login] = {
             "id": result.id,
             "display_name": result.display_name,
@@ -61,6 +67,13 @@ export async function fetchTwitchAPIUser(streamersList, type = "id") {
     return data;
 }
 
+/**
+ * Fetch Official Twitch API to return data about a Twitch Stream (with Streamer's ID), data retrieved from this
+ * function can be found on the README.
+ *
+ * @param streamersList array fulfilled with IDs of Streamer(s)
+ * @return data array fulfilled with exported data from the API
+ */
 export async function fetchTwitchAPIStream(streamersList) {
     if (!Array.isArray(streamersList)) {
         throw new Error('Parameter must be an array!');

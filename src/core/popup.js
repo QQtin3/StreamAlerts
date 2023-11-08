@@ -127,7 +127,7 @@ document.getElementById("popup-quit-remove").addEventListener("click", () => {
 
 
 async function setup() {
-    let streamersList = await getStreamersList();
+    let streamersList = getStreamersList();
     console.log(streamersList);
     await setupStreamerDiv(streamersList);
 }
