@@ -1,4 +1,4 @@
-import {fetchGqlAPI, fetchTwitchAPIStream, fetchTwitchAPIUser, getBody} from "./twitchAPI.js";
+import {fetchTwitchAPIStream, fetchTwitchAPIUser} from "./twitchAPI.js";
 import {createStreamerDiv} from "./popup.js";
 
 export async function addChannel(name) {
@@ -27,13 +27,18 @@ export async function addChannel(name) {
 }
 
 export async function isOnLive(name) {
-    let data = await fetchGqlAPI(getBody(name));
-    return !!data[0]?.data?.user?.stream?.id;
+    let nameTab = [name];
 }
 
 async function getStreamerID(name) {
-    let data = await fetchGqlAPI(getBody(name));
-    return data[0]?.data?.user?.id;
+    let loginName = name.toLowerCase()
+    let data = await fetchTwitchAPIUser([loginName], "login");
+    if (data[loginName].id === null) {
+        return undefined;
+    }
+    else {
+        return data[loginName].id;
+    }
 }
 
 export async function addStreamer(name) {
@@ -41,11 +46,9 @@ export async function addStreamer(name) {
     const {result, STREAMER_ID} = await addChannel(name);
     if (result > 0) {
         streamersList.push(STREAMER_ID);
-        chrome.storage.local.set({"streamersList": streamersList});
+        chrome.storage.sync.set({"streamersList": streamersList});
         const streamerData = await fetchTwitchAPIUser(streamersList);
         const streamData = await fetchTwitchAPIStream(streamersList);
-        console.log(streamerData);
-        console.log(streamData);
         await createStreamerDiv(streamerData, streamData, STREAMER_ID);
         console.log("\"" + name + "\" was successfully added to the streamersList." )
     }
@@ -69,7 +72,7 @@ export async function removeStreamer(name) {
     if (streamersList.includes(STREAMER_ID)) {
         const INDEX = streamersList.indexOf(STREAMER_ID)
         streamersList.splice(INDEX, 1);
-        chrome.storage.local.set({"streamersList": streamersList});
+        chrome.storage.sync.set({"streamersList": streamersList});
         document.getElementById(`streamer${STREAMER_ID}`).remove();
         console.log("\"" + name + "\" was successfully removed to the streamersList." )
     } else {
@@ -79,7 +82,7 @@ export async function removeStreamer(name) {
 
 export async function getStreamersList() {
     return await new Promise((resolve) => {
-        chrome.storage.local.get(["streamersList"], function (result) {
+        chrome.storage.sync.get(["streamersList"], function (result) {
             resolve(result.streamersList);
         });
     });
