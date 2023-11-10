@@ -17,6 +17,16 @@ function quitPopup(divName) {
     }
 }
 
+function dynamicStatusChange(streamersList, streamData) {
+    streamersList.forEach((id) => {
+        if (!!streamData[id]?.id) {
+            document.getElementById(`streamer${id}-status`).src = "../../img/online-stream.png";
+        } else {
+            document.getElementById(`streamer${id}-status`).src = "../../img/offline-stream.png";
+        }
+    });
+}
+
 export async function createStreamerDiv(streamerData, streamData, id) {
     const streamerDiv = document.createElement("div");
     streamerDiv.className = `streamer`;
@@ -126,6 +136,12 @@ async function setup() {
     await setupStreamerDiv(streamersList);
 }
 
+chrome.alarms.create({periodInMinutes: 1});
+chrome.alarms.onAlarm.addListener(async () => {
+    let streamersList = await getStreamersList();
+    let streamData = await fetchTwitchAPIStream(streamersList);
+    dynamicStatusChange(streamersList, streamData);
+});
 
 
 setup();

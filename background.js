@@ -60,15 +60,7 @@ async function main() {
     }
 }
 
-function dynamicStatusChange(streamersList, streamData) {
-    streamersList.forEach((id) => {
-        if (!!streamData[id]?.id) {
-            document.getElementById(`streamer${id}-status`).src = "../../img/online-stream.png";
-        } else {
-            document.getElementById(`streamer${id}-status`).src = "../../img/offline-stream.png";
-        }
-    });
-}
+
 
 async function getStreamersList() {
     const streamersList = await new Promise((resolve) => {

@@ -90,7 +90,7 @@ export async function removeStreamer(name) {
         streamersList.splice(INDEX, 1);
         chrome.storage.sync.set({"streamersList": streamersList});
         document.getElementById(`streamer${streamerID}`).remove();
-        console.log("\"" + name + "\" was successfully removed to the streamersList.")
+        console.log("\"" + name + "\" was successfully removed from the streamersList.")
     } else {
         alert("Error 404 : Channel not found!");
     }
