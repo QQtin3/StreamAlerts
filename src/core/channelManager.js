@@ -8,7 +8,7 @@ import {createStreamerDiv} from "./popup.js";
  * @return {result, STREAMER_ID} result & STREAMER_ID both int
  */
 export async function addChannel(name) {
-    const streamersList = getStreamersList();
+    const streamersList = await getStreamersList();
     let streamerID = await getStreamerID(name);
 
     if (streamerID === undefined) {  // Checks if streamer exists (-1 means not found)
@@ -54,7 +54,7 @@ async function getStreamerID(name) {
  * @param name Streamer's name that you want to add from the list
  */
 export async function addStreamer(name) {
-    const streamersList = getStreamersList();
+    const streamersList = await getStreamersList();
     const {result, STREAMER_ID} = await addChannel(name);
     if (result === 1) {
         streamersList.push(STREAMER_ID);
@@ -82,7 +82,7 @@ export async function addStreamer(name) {
  * @param name Streamer's name that you want to remove from the list
  */
 export async function removeStreamer(name) {
-    const streamersList = getStreamersList();
+    const streamersList = await getStreamersList();
     let streamerID = await getStreamerID(name);
 
     if (streamersList.includes(streamerID)) {

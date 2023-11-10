@@ -80,11 +80,13 @@ export async function createStreamerDiv(streamerData, streamData, id) {
 }
 
 async function setupStreamerDiv(streamersList) {
-    const streamerData = await fetchTwitchAPIUser(streamersList);
-    const streamData = await fetchTwitchAPIStream(streamersList);
+    if (streamersList.length > 0) {
+        const streamerData = await fetchTwitchAPIUser(streamersList);
+        const streamData = await fetchTwitchAPIStream(streamersList);
 
-    streamersList.forEach((id) =>
-        createStreamerDiv(streamerData, streamData, id));
+        streamersList.forEach((id) =>
+            createStreamerDiv(streamerData, streamData, id));
+    }
 }
 
 
@@ -127,7 +129,7 @@ document.getElementById("popup-quit-remove").addEventListener("click", () => {
 
 
 async function setup() {
-    let streamersList = getStreamersList();
+    let streamersList = await getStreamersList();
     console.log(streamersList);
     await setupStreamerDiv(streamersList);
 }
