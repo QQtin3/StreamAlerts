@@ -1,4 +1,4 @@
-import {addStreamer, getStreamersList, removeStreamer} from "./channelManager.js";
+import {addStreamer, getStreamersList, getStreamsStatus, removeStreamer} from "./channelManager.js";
 import {fetchTwitchAPIStream, fetchTwitchAPIUser} from "./twitchAPI.js";
 
 const addButtonElement = document.getElementById("add-button");
@@ -132,6 +132,8 @@ document.getElementById("popup-quit-remove").addEventListener("click", () => {
 
 async function setup() {
     let streamersList = await getStreamersList();
+    let streamsStatus = await getStreamsStatus();
+    console.log(streamsStatus);
     console.log(streamersList);
     await setupStreamerDiv(streamersList);
 }

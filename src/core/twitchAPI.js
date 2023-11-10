@@ -15,6 +15,8 @@ const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
 export async function fetchTwitchAPIUser(streamersList, type = "id") {
     if (!Array.isArray(streamersList)) {
         throw new Error('Parameter must be an array!');
+    } else if (streamersList.length === 0) {
+        throw new Error('Array is empty!');
     }
 
     let apiUrl;

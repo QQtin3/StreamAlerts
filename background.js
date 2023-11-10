@@ -1,5 +1,3 @@
-import {fetchTwitchAPIStream} from "./src/core/twitchAPI";
-
 const CLIENT_ID = "gkh1z7e7a50gj6cj71obcbu1mgmiql";
 const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
 
@@ -50,33 +48,60 @@ function notificationRemover(notificationID) {
     chrome.notifications.clear(notificationID);
 }
 
-async function main() {
-    let streamersList = await getStreamersList();
-    if (streamersList.length > 0) {
-        let streamersData = await fetchTwitchAPIUser(streamersList);
-        dynamicStatusChange(streamersList, streamersData);
-        streamersList.forEach((id) =>
-            notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url))
-    }
-}
-
-
 
 async function getStreamersList() {
-    const streamersList = await new Promise((resolve) => {
+    let streamersList = await new Promise((resolve) => {
         chrome.storage.sync.get(["streamersList"], function (result) {
             resolve(result.streamersList);
         });
     });
 
     if (streamersList === undefined) {
+        streamersList = [];
         chrome.storage.sync.set({"streamersList": []});
     }
     return streamersList;
 }
 
+async function getStreamsStatus() {
+    let streamsStatus = await new Promise((resolve) => {
+        chrome.storage.sync.get(["streamsStatus"], function (result) {
+            resolve(result.streamsStatus);
+        });
+    });
+
+    if (streamsStatus === undefined) {
+        streamsStatus = {};
+        chrome.storage.sync.set({"streamsStatus": {}});
+    }
+    return streamsStatus;
+}
+
+async function notificationManager(streamersList) {
+    if (streamersList.length > 0) {
+        let streamsStatus = await getStreamsStatus();
+        let streamersData = await fetchTwitchAPIUser(streamersList);
+        console.log("manager:" + streamsStatus);
+
+        streamersList.forEach((id) => {
+            if (streamsStatus[id].status === 1 && streamsStatus[id].notifHasBeenSent === 0) {
+                notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url);
+                streamsStatus[id].notifHasBeenSent = 1;
+            } else if (streamsStatus[id].status === 0 && streamsStatus[id].notifHasBeenSent === 1) {
+                notificationRemover(id.toString());
+                streamsStatus[id].notifHasBeenSent = 0;
+            }
+        });
+        chrome.storage.sync.set({"streamsStatus": streamsStatus});
+    }
+}
+
+
 chrome.alarms.create({periodInMinutes: 1});
-chrome.alarms.onAlarm.addListener(main());
+chrome.alarms.onAlarm.addListener(async () => {
+    let streamersList = await getStreamersList();
+    notificationManager(streamersList);
+});
 chrome.notifications.onClicked.addListener(async (notificationID) => {
     let streamerData = await fetchTwitchAPIUser([notificationID]);
     chrome.tabs.create({url: `https://twitch.tv/${streamerData[notificationID].login}`});

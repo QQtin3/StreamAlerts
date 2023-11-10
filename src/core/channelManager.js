@@ -59,8 +59,16 @@ export async function addStreamer(name) {
     if (result === 1) {
         streamersList.push(STREAMER_ID);
         chrome.storage.sync.set({"streamersList": streamersList});
+
         const streamerData = await fetchTwitchAPIUser(streamersList);
         const streamData = await fetchTwitchAPIStream(streamersList);
+
+        let streamsStatus = await getStreamsStatus();
+        streamsStatus[STREAMER_ID] = {status: 0, notifHasBeenSent: 0};
+        console.log("add0" + streamsStatus);
+        chrome.storage.sync.set({"streamsStatus": streamsStatus});
+        console.log("add:" + streamsStatus);
+
         await createStreamerDiv(streamerData, streamData, STREAMER_ID);
         console.log("\"" + name + "\" was successfully added to the streamersList.")
     }
@@ -83,13 +91,21 @@ export async function addStreamer(name) {
  */
 export async function removeStreamer(name) {
     const streamersList = await getStreamersList();
-    let streamerID = await getStreamerID(name);
+    const STREAMER_ID = await getStreamerID(name);
 
-    if (streamersList.includes(streamerID)) {
-        const INDEX = streamersList.indexOf(streamerID)
+    if (streamersList.includes(STREAMER_ID)) {
+        const INDEX = streamersList.indexOf(STREAMER_ID)
         streamersList.splice(INDEX, 1);
         chrome.storage.sync.set({"streamersList": streamersList});
-        document.getElementById(`streamer${streamerID}`).remove();
+
+        let streamsStatus = await getStreamsStatus();
+        const StreamerStatusIndex = streamsStatus.indexOf(STREAMER_ID);
+        streamsStatus.splice(StreamerStatusIndex, 1);
+        chrome.storage.sync.set({"streamsStatus": streamsStatus});
+
+        console.log("remove:" + streamsStatus);
+
+        document.getElementById(`streamer${STREAMER_ID}`).remove();
         console.log("\"" + name + "\" was successfully removed from the streamersList.")
     } else {
         alert("Error 404 : Channel not found!");
@@ -108,4 +124,18 @@ export async function getStreamersList() {
             resolve(result.streamersList);
         });
     });
+}
+
+export async function getStreamsStatus() {
+    let streamsStatus = await new Promise((resolve) => {
+        chrome.storage.sync.get(["streamsStatus"], function (result) {
+            resolve(result.streamsStatus);
+        });
+    });
+
+    if (streamsStatus === undefined) {
+        streamsStatus = {};
+        chrome.storage.sync.set({"streamsStatus": {}});
+    }
+    return streamsStatus;
 }
