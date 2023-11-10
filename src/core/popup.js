@@ -89,14 +89,6 @@ async function setupStreamerDiv(streamersList) {
     }
 }
 
-
-// TODO : Setup dynamic change
-/*async function dynamicStatusChange(streamersList) {
-    for (let i = 0; i < streamersList.length; i++) {
-        document.getElementById(`streamer${i}-status`).src = await getStatusPath(streamers[i]);
-    }
-}*/
-
 addButtonElement.addEventListener("click", () => {
     document.getElementById("popup-add").style.display = "block";
 });
@@ -133,6 +125,8 @@ async function setup() {
     console.log(streamersList);
     await setupStreamerDiv(streamersList);
 }
+
+
 
 setup();
 /* AUTO UPDATE Status each minute*/

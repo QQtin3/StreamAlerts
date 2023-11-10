@@ -1,3 +1,5 @@
+import {fetchTwitchAPIStream} from "./src/core/twitchAPI";
+
 const CLIENT_ID = "gkh1z7e7a50gj6cj71obcbu1mgmiql";
 const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
 
@@ -44,11 +46,6 @@ function notificationSender(notificationID, nickname, iconUrl) {
         });
 }
 
-/*async function getStatusPath(name) {
-    let isLive = await isOnLive(name);
-    return isLive ? "../../img/online-stream.png" : "../../img/offline-stream.png";
-}*/
-
 function notificationRemover(notificationID) {
     chrome.notifications.clear(notificationID);
 }
@@ -57,11 +54,21 @@ async function main() {
     let streamersList = await getStreamersList();
     if (streamersList.length > 0) {
         let streamersData = await fetchTwitchAPIUser(streamersList);
+        dynamicStatusChange(streamersList, streamersData);
         streamersList.forEach((id) =>
             notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url))
     }
 }
 
+function dynamicStatusChange(streamersList, streamData) {
+    streamersList.forEach((id) => {
+        if (!!streamData[id]?.id) {
+            document.getElementById(`streamer${id}-status`).src = "../../img/online-stream.png";
+        } else {
+            document.getElementById(`streamer${id}-status`).src = "../../img/offline-stream.png";
+        }
+    });
+}
 
 async function getStreamersList() {
     const streamersList = await new Promise((resolve) => {
