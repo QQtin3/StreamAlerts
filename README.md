@@ -1,1 +1,1 @@
-# TwitchExtensionPlus
+# StreamAlerts
