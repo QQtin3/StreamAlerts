@@ -137,14 +137,13 @@ async function setup() {
     console.log(streamersList);
     await setupStreamerDiv(streamersList);
 }
+setup();
 
-chrome.alarms.create({periodInMinutes: 1});
+
+/* AUTO UPDATE Status each minute*/
+chrome.alarms.create({periodInMinutes: 0.1});
 chrome.alarms.onAlarm.addListener(async () => {
     let streamersList = await getStreamersList();
     let streamData = await fetchTwitchAPIStream(streamersList);
     dynamicStatusChange(streamersList, streamData);
 });
-
-
-setup();
-/* AUTO UPDATE Status each minute*/

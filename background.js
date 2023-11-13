@@ -69,7 +69,6 @@ async function getStreamsStatus() {
             resolve(result.streamsStatus);
         });
     });
-
     if (streamsStatus === undefined) {
         streamsStatus = {};
         chrome.storage.sync.set({"streamsStatus": {}});
@@ -81,8 +80,6 @@ async function notificationManager(streamersList) {
     if (streamersList.length > 0) {
         let streamsStatus = await getStreamsStatus();
         let streamersData = await fetchTwitchAPIUser(streamersList);
-        console.log("manager:" + streamsStatus);
-
         streamersList.forEach((id) => {
             if (streamsStatus[id].status === 1 && streamsStatus[id].notifHasBeenSent === 0) {
                 notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url);
@@ -96,8 +93,11 @@ async function notificationManager(streamersList) {
     }
 }
 
+/* DEBUG PART ONLY - RESET STORAGE TO ZERO
+chrome.storage.sync.set({"streamsStatus": {}});
+chrome.storage.sync.set({"streamersList": []});*/
 
-chrome.alarms.create({periodInMinutes: 1});
+chrome.alarms.create({periodInMinutes: 0.1});
 chrome.alarms.onAlarm.addListener(async () => {
     let streamersList = await getStreamersList();
     notificationManager(streamersList);

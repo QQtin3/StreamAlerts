@@ -65,9 +65,7 @@ export async function addStreamer(name) {
 
         let streamsStatus = await getStreamsStatus();
         streamsStatus[STREAMER_ID] = {status: 0, notifHasBeenSent: 0};
-        console.log("add0" + streamsStatus);
         chrome.storage.sync.set({"streamsStatus": streamsStatus});
-        console.log("add:" + streamsStatus);
 
         await createStreamerDiv(streamerData, streamData, STREAMER_ID);
         console.log("\"" + name + "\" was successfully added to the streamersList.")
@@ -99,11 +97,8 @@ export async function removeStreamer(name) {
         chrome.storage.sync.set({"streamersList": streamersList});
 
         let streamsStatus = await getStreamsStatus();
-        const StreamerStatusIndex = streamsStatus.indexOf(STREAMER_ID);
-        streamsStatus.splice(StreamerStatusIndex, 1);
+        delete streamsStatus[STREAMER_ID];
         chrome.storage.sync.set({"streamsStatus": streamsStatus});
-
-        console.log("remove:" + streamsStatus);
 
         document.getElementById(`streamer${STREAMER_ID}`).remove();
         console.log("\"" + name + "\" was successfully removed from the streamersList.")
@@ -119,11 +114,17 @@ export async function removeStreamer(name) {
  * @return Array fulfilled with Streamer(s) ID
  */
 export async function getStreamersList() {
-    return await new Promise((resolve) => {
+    let streamersList = await new Promise((resolve) => {
         chrome.storage.sync.get(["streamersList"], function (result) {
             resolve(result.streamersList);
         });
     });
+
+    if (streamersList === undefined) {
+        streamersList = [];
+        chrome.storage.sync.set({"streamersList": []});
+    }
+    return streamersList;
 }
 
 export async function getStreamsStatus() {
@@ -132,7 +133,6 @@ export async function getStreamsStatus() {
             resolve(result.streamsStatus);
         });
     });
-
     if (streamsStatus === undefined) {
         streamsStatus = {};
         chrome.storage.sync.set({"streamsStatus": {}});
