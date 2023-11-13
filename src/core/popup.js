@@ -17,9 +17,9 @@ function quitPopup(divName) {
     }
 }
 
-function dynamicStatusChange(streamersList, streamData) {
+function dynamicStatusChange(streamersList, streamsStatus) {
     streamersList.forEach((id) => {
-        if (!!streamData[id]?.id) {
+        if (streamsStatus[id].status === 1) {
             document.getElementById(`streamer${id}-status`).src = "../../img/online-stream.png";
         } else {
             document.getElementById(`streamer${id}-status`).src = "../../img/offline-stream.png";
@@ -132,9 +132,6 @@ document.getElementById("popup-quit-remove").addEventListener("click", () => {
 
 async function setup() {
     let streamersList = await getStreamersList();
-    let streamsStatus = await getStreamsStatus();
-    console.log(streamsStatus);
-    console.log(streamersList);
     await setupStreamerDiv(streamersList);
 }
 setup();
@@ -144,6 +141,6 @@ setup();
 chrome.alarms.create({periodInMinutes: 0.1});
 chrome.alarms.onAlarm.addListener(async () => {
     let streamersList = await getStreamersList();
-    let streamData = await fetchTwitchAPIStream(streamersList);
-    dynamicStatusChange(streamersList, streamData);
+    let streamStatus = await getStreamsStatus();
+    dynamicStatusChange(streamersList, streamStatus);
 });

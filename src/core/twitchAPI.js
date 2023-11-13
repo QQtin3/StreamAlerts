@@ -9,7 +9,7 @@ const TOKEN_ID = "2p6xttynzyy8s69bcg8lw2s7stu4h4";
  * can be found on the README.
  *
  * @param streamersList array fulfilled with IDs of Streamers or with names if type = "login"
- * @param type default="id"
+ * @param type default="id" replace with anything else when calling the function to get with name
  * @return data array fulfilled with exported data from the API
  */
 export async function fetchTwitchAPIUser(streamersList, type = "id") {

@@ -49,9 +49,9 @@ async function getStreamerID(name) {
 }
 
 /**
- * Add a streamer from the streamersList and add their div-box on the popup.
+ * Add a streamer to the streamersList and add their div-box on the popup.
  *
- * @param name Streamer's name that you want to add from the list
+ * @param name Streamer's name that is going to be added to the list
  */
 export async function addStreamer(name) {
     const streamersList = await getStreamersList();
@@ -85,7 +85,7 @@ export async function addStreamer(name) {
 /**
  * Remove a streamer from the streamersList and remove their div-box on the popup.
  *
- * @param name Streamer's name that you want to remove from the list
+ * @param name Streamer's name that is going to be removed from the list
  */
 export async function removeStreamer(name) {
     const streamersList = await getStreamersList();
@@ -111,7 +111,7 @@ export async function removeStreamer(name) {
  * Get and returns the User's streamersList using 'chrome.storage' API
  * (please refer to the official API for more details about it).
  *
- * @return Array fulfilled with Streamer(s) ID
+ * @return Array fulfilled with Streamer(s) ID, if none exists, creates an empty one
  */
 export async function getStreamersList() {
     let streamersList = await new Promise((resolve) => {
@@ -127,6 +127,12 @@ export async function getStreamersList() {
     return streamersList;
 }
 
+/**
+ * Get and returns the Streams's status using 'chrome.storage' API
+ * (please refer to the official API for more details about it).
+ *
+ * @return Object fulfilled with: id {status, hasNotificationBeenSent} if none exists, creates an empty one
+ */
 export async function getStreamsStatus() {
     let streamsStatus = await new Promise((resolve) => {
         chrome.storage.sync.get(["streamsStatus"], function (result) {
