@@ -144,7 +144,7 @@ async function getStreamsStatus() {
 async function notificationManager(streamersList, streamersData, streamsStatus) {
     if (streamersList.length > 0) {
         streamersList.forEach((id) => {
-            if (streamsStatus[id]["status"] === 1 && streamsStatus[id].notifHasBeenSent === 0) {
+            if (streamsStatus[id].status === 1 && streamsStatus[id].notifHasBeenSent === 0) {
                 notificationSender(id.toString(), streamersData[id].display_name, streamersData[id].profile_image_url);
                 streamsStatus[id].notifHasBeenSent = 1;
             } else if (streamsStatus[id].status === 0 && streamsStatus[id].notifHasBeenSent === 1) {
