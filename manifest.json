@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TwitchExtension+",
+  "name": "Stream Alerts",
   "author": "Quentin L.",
   "description": "Retrouve toutes les informations concernant tes streamers favoris !",
   "version": "0",
