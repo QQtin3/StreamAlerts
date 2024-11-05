@@ -28,7 +28,7 @@ If you got an error and this error suggests to see the README you are on the rig
 
 
 # Feedback - Bug Reporting
-If you want to submit a feedback or a bug report please feel free to reach me on Discord <i>(Username: QQtin)</i> or by mail at StreamAlerts@gmx.fr<br>
+If you want to submit a feedback or a bug report please feel free to reach me on Discord <i>(Username: QQtin)</i> or by mail at qqtin.projects@qqtinworks.fr<br>
 I accept any feedback that you can give me if it is constructive and would be happy to discuss it with you!
 Concerning bug reports, either you contact me by the ways I have written upper, or you can create an issue on this repository!
 
