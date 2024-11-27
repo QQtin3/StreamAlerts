@@ -1,5 +1,5 @@
 <div style="text-align: center;">
-<img src="https://cdn.discordapp.com/attachments/574293370512605205/1189211626788888636/StreamAlertsLogoWhiteBG.png" style="width: 300px" alt="StreamAlerts' Logo">
+<img src="https://qqtinworks.fr/projects/StreamAlerts/logo.png" style="width: 300px" alt="StreamAlerts' Logo">
 </div>
 
 StreamAlerts is a Manifest V3 Extension developed by [@QQtin](https://github.com/QQtin3) based on the Twitch API. The extension allows users to "follow" their favorite streamers.
